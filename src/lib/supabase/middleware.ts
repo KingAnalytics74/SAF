@@ -1,10 +1,15 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import type { Database } from "@/lib/database.types";
+import { isSupabaseConfigured } from "@/lib/supabase/is-configured";
 
 const PUBLIC_PATHS = ["/login"];
 
 export async function updateSession(request: NextRequest) {
+  if (!isSupabaseConfigured()) {
+    return NextResponse.next({ request });
+  }
+
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient<Database>(
